@@ -1,3 +1,6 @@
+local convertPharaoh = CreateConVar("ttt_defector_convert_pharaoh", 1, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE, FCVAR_REPLICATED}, "Should Pharaohs be able to be converted to a Defector?", 0, 1)
+
+
 if SERVER then
 	AddCSLuaFile()
 else
@@ -29,8 +32,8 @@ SWEP.HoldType              = "slam"
 
 SWEP.UseHands              = true
 SWEP.DrawAmmo              = false
-SWEP.ViewModelFlip = false
-SWEP.ViewModelFOV = 54
+SWEP.ViewModelFlip         = false
+SWEP.ViewModelFOV          = 54
 SWEP.ViewModel             = Model("models/weapons/zaratusa/jihad_bomb/v_jb.mdl")
 SWEP.WorldModel            = Model("models/weapons/zaratusa/jihad_bomb/w_jb.mdl")
 
@@ -42,20 +45,25 @@ if SERVER then
       -- Only do check if the picked up weapon is the Defector Jihad
       if class == 'weapon_ttt_defector_jihad' then
 
-         -- If the player picking up the Defector Jihad is NOT the owner of the Jihad
-         -- If the player picking up the Defector Jihad is ROLE_INNOCENT
-         if owner:GetRole() == ROLE_INNOCENT then
+         -- If the player picking up the Defector Jihad is ROLE_INNOCENT and TEAM_INNOCENT
+         -- Checking team as well since some roles can be Innocent but a different team
+         if owner:GetRole() == ROLE_INNOCENT 
+         and owner:GetTeam() == TEAM_INNOCENT then
 
-            -- Remove the Defector Jihad from the player
-            timer.Simple( 0, function()
-               owner:StripWeapon(class)
-            end )
-            
-            -- Give the normal Jihad to the player
-            owner:SafePickupWeaponClass("weapon_ttt_jihad_bomb", true)
+            -- Check if the player is any of the disabled convertable roles
+            if convertPharaoh:GetBool() and owner:GetSubRole() == ROLE_PHARAOH then 
 
-            -- Convert the player to the Defector role
-            ConvertDefector(owner)
+               -- Remove the Defector Jihad from the player
+               timer.Simple( 0, function()
+                  owner:StripWeapon(class)
+               end )
+               
+               -- Give the normal Jihad to the player
+               owner:SafePickupWeaponClass("weapon_ttt_jihad_bomb", true)
+
+               -- Convert the player to the Defector role
+               ConvertDefector(owner)
+            end
          end
       end
    end)
