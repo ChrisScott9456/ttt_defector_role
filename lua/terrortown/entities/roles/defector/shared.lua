@@ -40,7 +40,8 @@ if SERVER then
         if not IsValid(ply) 
 		or not IsValid(attacker) 
 		or not attacker:IsPlayer() 
-		or attacker:GetSubRole() ~= ROLE_DEFECTOR then return end
+		or attacker:GetSubRole() ~= ROLE_DEFECTOR 
+		or attacker:GetTeam() == TEAM_NONE then return end
 		
         if SpecDM and (ply.IsGhost and ply:IsGhost() or (attacker.IsGhost and attacker:IsGhost())) then return end
     
