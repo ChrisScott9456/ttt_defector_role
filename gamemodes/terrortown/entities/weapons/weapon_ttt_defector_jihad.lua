@@ -51,7 +51,7 @@ if SERVER then
          and owner:GetTeam() == TEAM_INNOCENT then
 
             -- Check if the player is any of the disabled convertable roles
-            if convertPharaoh:GetBool() and owner:GetSubRole() == ROLE_PHARAOH then 
+            if not (convertPharaoh:GetBool() and owner:GetSubRole() == ROLE_PHARAOH) then 
 
                -- Remove the Defector Jihad from the player
                timer.Simple( 0, function()
